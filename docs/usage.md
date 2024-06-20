@@ -128,11 +128,11 @@ AACAAGACCCTTGAG
 TACCCGTAATAGCGT
 ```
 
-`r2_pattern` Specifies how to extract the tag barcode sequence from R2 read. Example: `L21C15` denotes that the first 21 bases are linker and tag barcode start from the 22th base and has a length of 15 bases.
+`r2_pattern` Specifies how to extract the index barcode sequence from the R2 read. Example: `L21C15` means the first 21 bases are the linker, the tag barcode starts at the 22nd base and is 15 bases long.
 
 ### Running the pipeline with test data
 
-This pipeline contains a small test data. The test config file can be found [here](../conf/test.config) can test data [here].(https://github.com/singleron-RD/sccite_test_data)
+This pipeline contains a small test data. The test config file can be found [here](../conf/test.config) and test data [here](https://github.com/singleron-RD/sccite_test_data).
 
 Run the following command to test
 
