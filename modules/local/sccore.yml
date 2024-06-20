@@ -1,0 +1,8 @@
+name: sccore
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - pip:
+      - sccore==1.0.0

@@ -1,3 +1,4 @@
+import csv
 import gzip
 import json
 import logging
@@ -29,6 +30,7 @@ def fastq_str(name, seq, qual):
 
 
 def get_logger(name, level=logging.INFO):
+    """out to stderr"""
     logger = logging.getLogger(name)
     logger.setLevel(level)
     log_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -43,11 +45,21 @@ def write_json(data, fn):
         json.dump(data, f, indent=4)
 
 
-def nested_defaultdict(dim=3, val_type=int):
-    if dim == 1:
-        return defaultdict(val_type)
-    else:
-        return defaultdict(lambda: nested_defaultdict(dim - 1, val_type=val_type))
+def write_multiqc(data, sample, assay, step):
+    fn = f"{sample}.{assay}.{step}.json"
+    write_json(data, fn)
+
+
+def get_frac(raw_frac: float):
+    return round(float(raw_frac) * 100, 2)
+
+
+def csv2dict(csv_file):
+    data = {}
+    reader = csv.reader(openfile(csv_file))
+    for row in reader:
+        data[row[0]] = row[1]
+    return data
 
 
 def add_log(func):
@@ -78,3 +90,10 @@ def add_log(func):
 
     wrapper.logger = logger
     return wrapper
+
+
+def nested_defaultdict(dim=3, val_type=int):
+    if dim == 1:
+        return defaultdict(val_type)
+    else:
+        return defaultdict(lambda: nested_defaultdict(dim - 1, val_type=val_type))

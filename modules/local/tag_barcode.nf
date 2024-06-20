@@ -1,4 +1,4 @@
-process EXTRACT {
+process TAG_BARCODE {
     tag "$meta.id"
     label 'process_single'
 
@@ -6,27 +6,25 @@ process EXTRACT {
     container "singleron-rd/sccore:1.0.0"
 
     input:
-    tuple val(meta), path(reads, stageAs: "?/*")
-    path assets_dir
-    val protocol
+    tuple val(meta), path(reads), path(match_barcode)
+    path tag_barcode_fasta
+    val r2_pattern
 
     output:
-    tuple val(meta), path("${meta.id}_R*.fq*"),  emit: reads
     tuple val(meta), path("*.json"),  emit: json
+    tuple val(meta), path("*.csv.gz"),  emit: csv
     path  "versions.yml" , emit: versions
 
     script:
     // separate forward from reverse pairs
-    def (r1,r2) = reads.collate(2).transpose()
     """
-    extract.py \\
+    tag_barcode.py \\
         --sample ${meta.id} \\
-        --fq1 ${r1.join( "," )} \\
-        --fq2 ${r2.join( "," )} \\
-        --assets_dir ${assets_dir} \\
-        --protocol ${protocol} 
-   
-
+        --fq ${reads} \\
+        --tag_barcode_fasta ${tag_barcode_fasta} \\
+        --match_barcode ${match_barcode} \\
+        --r2_pattern ${r2_pattern}
+  
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         sccore: \$(format-bc --version)

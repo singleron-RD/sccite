@@ -1,1 +1,1 @@
-ASSAY = 'sccite'
+ASSAY = "sccite"

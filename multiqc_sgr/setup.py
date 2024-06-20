@@ -15,8 +15,7 @@ setup(
     install_requires=["multiqc==1.21"],
     entry_points={
         "multiqc.modules.v1": [
-            "scsnp = multiqc_sgr.scsnp:MultiqcModule",
-            "scrna = multiqc_sgr.scrna:MultiqcModule",
+            "sccite = multiqc_sgr.sccite:MultiqcModule",
         ],
         "multiqc.hooks.v1": [
             "before_config = multiqc_sgr:multiqc_sgr_config",

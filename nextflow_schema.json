@@ -46,16 +46,26 @@
                 }
             }
         },
-        "optional_module": {
-            "title": "Optional module",
+        "tag_barcode": {
+            "title": "tag barcode",
             "type": "object",
             "description": "",
             "default": "",
             "properties": {
-                "run_fastqc": {
-                    "type": "boolean"
+                "r2_pattern": {
+                    "type": "string",
+                    "description": "String used to locate the tag barcode in R2 reads. L:linker C:tag barcode. The number after L or C indicates the length.",
+                    "default": "L21C15"
+                },
+                "tag_barcode_fasta": {
+                    "type": "string",
+                    "description": "Path to tag_barcode fasta file."
                 }
-            }
+            },
+            "required": [
+                "r2_pattern",
+                "tag_barcode_fasta"
+            ]
         },
         "protocol_options": {
             "title": "Protocol options",
@@ -70,11 +80,23 @@
                         "auto",
                         "GEXSCOPE-MicroBead",
                         "GEXSCOPE-V1",
-                        "GEXSCOPE-V2",
-                        "new"
+                        "GEXSCOPE-V2"
                     ],
-                    "description": "Predefined pattern and whitelist. Can auto detect GEXSCOPE protocols.",
-                    "help_text": "If set to \"new\", --pattern and --whitelist are required. The default is to auto-detect the protocol when running GEXSCOPE. "
+                    "description": "Predefined pattern and whitelist. Can auto detect GEXSCOPE protocols."
+                }
+            },
+            "required": [
+                "protocol"
+            ]
+        },
+        "optional_module": {
+            "title": "Optional module",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_fastqc": {
+                    "type": "boolean"
                 }
             }
         },
@@ -181,7 +203,7 @@
                 },
                 "publish_dir_mode": {
                     "type": "string",
-                    "default": "copy",
+                    "default": "symlink",
                     "description": "Method used to save pipeline results to output directory.",
                     "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
                     "fa_icon": "fas fa-copy",
@@ -285,10 +307,13 @@
             "$ref": "#/definitions/input_output_options"
         },
         {
-            "$ref": "#/definitions/optional_module"
+            "$ref": "#/definitions/tag_barcode"
         },
         {
             "$ref": "#/definitions/protocol_options"
+        },
+        {
+            "$ref": "#/definitions/optional_module"
         },
         {
             "$ref": "#/definitions/max_job_request_options"
@@ -299,14 +324,5 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ],
-    "properties": {
-        "r2_pattern": {
-            "type": "string",
-            "default": "L21C15"
-        },
-        "feature_barcode_fasta": {
-            "type": "string"
-        }
-    }
+    ]
 }

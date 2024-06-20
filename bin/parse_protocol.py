@@ -5,7 +5,7 @@ import re
 import sys
 from collections import defaultdict
 
-import pyfastx
+import pysam
 import utils
 
 logger = utils.get_logger(__name__)
@@ -206,8 +206,7 @@ class Auto:
                 self.mismatch_dict[protocol] = get_raw_mismatch(self.protocol_dict[protocol]["bc"], 1)
 
     def run(self):
-        protocol = self.get_protocol()
-        return protocol, self.protocol_dict[protocol]
+        return self.get_protocol()
 
     def get_protocol(self):
         """check protocol in the fq1_list"""
@@ -261,15 +260,15 @@ class Auto:
     def get_fq_protocol(self, fq1):
         results = defaultdict(int)
 
-        fq = pyfastx.Fastx(fq1)
-        n = 0
-        for name, seq, qual in fq:
-            n += 1
-            protocol = self.seq_protocol(seq)
-            if protocol:
-                results[protocol] += 1
-            if n == self.max_read:
-                break
+        with pysam.FastxFile(fq1) as fh:
+            n = 0
+            for entry in fh:
+                n += 1
+                protocol = self.seq_protocol(entry.sequence)
+                if protocol:
+                    results[protocol] += 1
+                if n == self.max_read:
+                    break
         sorted_counts = sorted(results.items(), key=lambda x: x[1], reverse=True)
         logger.info(sorted_counts)
 

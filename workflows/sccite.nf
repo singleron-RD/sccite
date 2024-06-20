@@ -7,6 +7,7 @@
 include { FASTQC                 } from '../modules/nf-core/fastqc/main'
 
 include { EXTRACT                } from '../modules/local/extract'
+include { TAG_BARCODE                } from '../modules/local/tag_barcode'
 include { MULTIQC                } from '../modules/local/multiqc_sgr'
 
 include { paramsSummaryMap       } from 'plugin/nf-validation'
@@ -34,12 +35,12 @@ workflow sccite {
     ch_samplesheet.multiMap { meta, fastq, match_barcode ->
         reads: [meta, fastq]
         match_barcode: [meta, match_barcode]
-    }.set {ch_samplesheet}
+    }.set {ch_input}
 
     // MODULE: Run FastQC
     if (params.run_fastqc) {
         FASTQC (
-            ch_samplesheet.reads
+            ch_input.reads
         )
         ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
         ch_versions = ch_versions.mix(FASTQC.out.versions.first())
@@ -47,12 +48,23 @@ workflow sccite {
 
     // extract cell barcode
     EXTRACT (
-        ch_samplesheet,
+        ch_input.reads,
         "${projectDir}/assets/",
         params.protocol,
     )
     ch_versions = ch_versions.mix(EXTRACT.out.versions.first())
     ch_multiqc_files = ch_multiqc_files.mix(EXTRACT.out.json.collect{it[1]})
+
+    ch_merge = EXTRACT.out.reads.concat(ch_input.match_barcode)
+                                .groupTuple()
+                                .map { it -> [it[0], it[1][0], it[1][1]] }
+    TAG_BARCODE (
+        ch_merge,
+        params.tag_barcode_fasta,
+        params.r2_pattern,
+    )
+    ch_versions = ch_versions.mix(TAG_BARCODE.out.versions.first())
+    ch_multiqc_files = ch_multiqc_files.mix(TAG_BARCODE.out.json.collect{it[1]})
 
     //
     // Collate and save software versions
