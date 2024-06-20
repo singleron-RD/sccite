@@ -53,8 +53,8 @@ class TagBarcode:
             raise ValueError(f"""The length of tag barcode in r2_pattern({bc_pattern_len}) != 
                 length of feature barcode in tag_barcode_fasta({barcode_length})""")
         mismatch_dict = get_tag_barcode_mismatch_dict(barcode_dict)
-        bcs = utils.read_one_col(self.args.match_barcode)
-        bcs = set(bcs)
+        bcs_list = utils.read_one_col(self.args.match_barcode)
+        bcs = set(bcs_list)
 
         total_reads = 0
         tag_reads = 0
@@ -93,6 +93,7 @@ class TagBarcode:
 
         # write csv
         df = pd.DataFrame.from_dict(bc_antibody)
+        df = df.reindex(columns=bcs_list, fill_value=0)
         df.fillna(0, inplace=True)
         df = df.astype(int)
         df.to_csv(f"{self.args.sample}.tag_barcode.csv.gz")

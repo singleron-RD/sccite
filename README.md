@@ -1,6 +1,6 @@
 ## Introduction
 
-**singleron-RD/sccite** is a bioinformatics pipeline to detect variants in single-cell amplicon data.
+**singleron-RD/sccite** is a bioinformatics pipeline to generate antibody matrix from single-cell CITE-Seq data.
 
 ## Documents
 

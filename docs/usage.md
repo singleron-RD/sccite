@@ -31,7 +31,7 @@ When you have many samples, manually creating `samplesheet.csv` can be tedious a
 
 ```
 pip install sccore
-manifest -m manifest.csv -f /workspaces/sccite_test_data/NPM1 --match
+manifest -m manifest.csv -f /workspaces/sccite_test_data/test1 --match
 ```
 
 `-m --manifest` Path to the manifest CSV file containing prefix-sample mapping.
@@ -46,20 +46,25 @@ X,prefixX
 Y,prefixY
 ```
 
-/workspaces/sccite_test_data/NPM1
 ```
-NPM1/
+/workspaces/sccite_test_data/test1
+├── cite_barcode.fasta
+├── manifest.csv
 ├── match_barcode
 │   ├── X.matrix
-│   │   └── barcodes.tsv.gz
+│   │   └── filtered
+│   │       └── barcodes.tsv.gz
 │   └── Y.matrix
-│       └── barcodes.tsv.gz
+│       └── filtered
+│           └── barcodes.tsv.gz
 ├── prefixX_001_R1.fq.gz
 ├── prefixX_001_R2.fq.gz
 ├── prefixX_002_R1.fq.gz
 ├── prefixX_002_R2.fq.gz
 ├── prefixY_001_R1.fq.gz
 ├── prefixY_001_R2.fq.gz
+├── README.md
+└── samplesheet.csv
 ```
 
 ## Running the pipeline
@@ -70,9 +75,8 @@ The typical command for running the pipeline is as follows:
 nextflow run singleron-RD/sccite \
  --input ./samplesheet.csv \
  --outdir ./results \
- --genes BRAF,EGFR,HRAS,KRAS,NRAS,PIK3CA,TP53 \
- --fasta path_to_genome_fasta \
- --star_genome path_to_star_genome_index \
+ --tag_barcode_fasta tag_barcode.fasta \
+ --r2_pattern C21L15 \
  -profile docker 
 ```
 
@@ -100,11 +104,10 @@ nextflow run singleron-RD/sccite -profile docker -params-file params.yaml
 with `params.yaml` containing:
 
 ```yaml
-input: './samplesheet.csv'
-outdir: './results/'
-genes: 'BRAF,EGFR,HRAS,KRAS,NRAS,PIK3CA,TP53'
-fasta: 'path_to_genome_fasta'
-star_genome: 'path_to_star_genome_index'
+input: ./samplesheet.csv
+outdir: ./results/
+tag_barcode_fasta： tag_barcode.fasta 
+r2_pattern：C21L15
 <...>
 ```
 
@@ -115,35 +118,22 @@ pip install nf-core
 nf-core launch singleron-RD/sccite
 ```
 
-### Target genes
-The target gene is specified using the genes parameter. The gene combinations currently provided by the kit are as follows:
+### Tag barcode
 
-- lung: `BRAF,EGFR,HRAS,KRAS,NRAS,PIK3CA,TP53`
-- blood: `IDH1,IDH2,KRAS,TP53,WT1`
-- Clonal hematopoiesis of indeterminate potential (CHIP): `DNMT3A,TET2,JAK2,TP53,ASXL1`
-  
-### Create genome index
-
-Since indexing is an expensive process in time and resources you should ensure that it is only done once, by retaining the indices generated from each batch of reference files.
-
-When running the data of a certain species for the first time, you can provide `fasta`, `gtf` and `genome_name` instead of `star_genome`. For example,
-
-```yaml
-fasta: "https://raw.githubusercontent.com/singleron-RD/test_genome/master/human.GRCh38.99.MT/human.GRCh38.99.MT.fasta"
-gtf: "https://raw.githubusercontent.com/singleron-RD/test_genome/master/human.GRCh38.99.MT/human.GRCh38.99.MT.gtf"
-genome_name: "human.GRCh38.99.MT"
+`tag_barcode_fasta` Path to the tag barcode fasta file. The read name in the fasta is the antibody ID and the sequence is the tag barcode. Example:
+```
+>A0001_CD4
+AACAAGACCCTTGAG
+>A0002_CD8a
+TACCCGTAATAGCGT
 ```
 
-The STAR index files will be saved in `{outdir}/star_genome/{genome_name}/`.
-When running data from the same genome later, you can provide `star_genome` to skip the indexing:
-
-```yaml
-star_genome: "/workspaces/test/outs/star_genome/human.GRCh38.99.MT/"
-```
+`r2_pattern` Specifies how to extract the tag barcode sequence from R2 read. Example: `L21C15` denotes that the first 21 bases are linker and tag barcode start from the 22th base and has a length of 15 bases.
 
 ### Running the pipeline with test data
 
-This pipeline contains a small test data. The test config file can be found [here](../conf/test.config).
+This pipeline contains a small test data. The test config file can be found [here](../conf/test.config) can test data [here].(https://github.com/singleron-RD/sccite_test_data)
+
 Run the following command to test
 
 ```
