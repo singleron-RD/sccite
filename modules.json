@@ -1,0 +1,100 @@
+{
+    "name": "singleron-RD/sccite",
+    "homePage": "https://github.com/singleron-RD/sccite",
+    "repos": {
+        "https://github.com/nf-core/modules.git": {
+            "modules": {
+                "nf-core": {
+                    "bcftools/filter": {
+                        "branch": "master",
+                        "git_sha": "a3893076a76e91b3ff152faddf872f00778fb224",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "fastqc": {
+                        "branch": "master",
+                        "git_sha": "f4ae1d942bd50c5c0b9bd2de1393ce38315ba57c",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "freebayes": {
+                        "branch": "master",
+                        "git_sha": "77978839bef6d437f21edb900b49bcbc04f9f735",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "gatk4/createsequencedictionary": {
+                        "branch": "master",
+                        "git_sha": "e6fe277739f5894711405af3e717b2470bd956b5",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "gatk4/splitncigarreads": {
+                        "branch": "master",
+                        "git_sha": "1e15ad71d9022293985dd02e24186e5e496a0b3c",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "samtools/faidx": {
+                        "branch": "master",
+                        "git_sha": "f153f1f10e1083c49935565844cccb7453021682",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "samtools/index": {
+                        "branch": "master",
+                        "git_sha": "f4596fe0bdc096cf53ec4497e83defdb3a94ff62",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "snpeff/download": {
+                        "branch": "master",
+                        "git_sha": "214d575774c172062924ad3564b4f66655600730",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "snpeff/snpeff": {
+                        "branch": "master",
+                        "git_sha": "2f3db6f45147ebbb56b371536e31bdf622b5bfee",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    }
+                }
+            },
+            "subworkflows": {
+                "nf-core": {
+                    "utils_nextflow_pipeline": {
+                        "branch": "master",
+                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
+                        "installed_by": [
+                            "subworkflows"
+                        ]
+                    },
+                    "utils_nfcore_pipeline": {
+                        "branch": "master",
+                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
+                        "installed_by": [
+                            "subworkflows"
+                        ]
+                    },
+                    "utils_nfvalidation_plugin": {
+                        "branch": "master",
+                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
+                        "installed_by": [
+                            "subworkflows"
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
