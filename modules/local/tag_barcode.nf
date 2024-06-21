@@ -12,7 +12,7 @@ process TAG_BARCODE {
 
     output:
     tuple val(meta), path("*.json"),  emit: json
-    tuple val(meta), path("*.csv.gz"),  emit: csv
+    tuple val(meta), path("*.csv*"),  emit: csv
     path  "versions.yml" , emit: versions
 
     script:

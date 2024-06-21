@@ -11,7 +11,7 @@ process EXTRACT {
     val protocol
 
     output:
-    tuple val(meta), path("${meta.id}_R*.fq*"),  emit: reads
+    tuple val(meta), path("${meta.id}_R2.fq.gz"),  emit: reads
     tuple val(meta), path("*.json"),  emit: json
     path  "versions.yml" , emit: versions
 

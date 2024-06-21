@@ -113,6 +113,12 @@ class MultiqcModule(BaseMultiqcModule):
                 "scale": "blue",
                 "format": "{:,.0f}",
             },
+            "Aggregate Barcodes": {
+                "title": "Aggregate Barcodes",
+                "description": "Number of cell barcodes with protein aggregation. Ideally < 10",
+                "scale": "blue",
+                "format": "{:,.0f}",
+            },
         }
         self.general_stats_addcols(summary_data, headers=headers)
 

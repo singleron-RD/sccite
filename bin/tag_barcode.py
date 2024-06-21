@@ -10,6 +10,8 @@ import pysam
 import utils
 from __init__ import ASSAY
 
+MAX_UMI_FRACTION = 0.01
+
 
 def get_tag_barcode_mismatch_dict(barcode_dict):
     mismatch_dict = {}
@@ -59,7 +61,7 @@ class TagBarcode:
         total_reads = 0
         tag_reads = 0
         incell_reads = 0
-        bc_antibody_umi = utils.nested_defaultdict(dim=3)
+        bc_antibody_umi_read = utils.nested_defaultdict(dim=3)
         with pysam.FastxFile(self.args.fq) as infile:
             for record in infile:
                 total_reads += 1
@@ -70,18 +72,54 @@ class TagBarcode:
                     tag_reads += 1
                     if bc in bcs:
                         antibody = mismatch_dict[tag_barcode]
-                        bc_antibody_umi[bc][antibody][umi] += 1
+                        bc_antibody_umi_read[bc][antibody][umi] += 1
                         incell_reads += 1
 
         # median umi per cell
         bc_umi = defaultdict(int)
-        bc_antibody = utils.nested_defaultdict(dim=2)
+        bc_antibody_umi = utils.nested_defaultdict(dim=2)
+        antibody_umi = defaultdict(int)
+        for bc in bc_antibody_umi_read:
+            for antibody in bc_antibody_umi_read[bc]:
+                umi_count = len(bc_antibody_umi_read[bc][antibody])
+                bc_umi[bc] += umi_count
+                bc_antibody_umi[bc][antibody] = umi_count
+                antibody_umi[antibody] += umi_count
+        median_umi_per_cell = np.median(list(bc_umi.values()))
+
+        # write raw csv
+        df = pd.DataFrame.from_dict(bc_antibody_umi)
+        df = df.reindex(columns=bcs_list, fill_value=0)
+        df.fillna(0, inplace=True)
+        df = df.astype(int)
+        df.to_csv(f"{self.args.sample}.raw.tag_barcode.csv.gz")
+
+        # filter aggregate barcodes
+        rows = []
         for bc in bc_antibody_umi:
             for antibody in bc_antibody_umi[bc]:
-                umi_count = len(bc_antibody_umi[bc][antibody])
-                bc_umi[bc] += umi_count
-                bc_antibody[bc][antibody] = umi_count
-        median_umi_per_cell = np.median(list(bc_umi.values()))
+                cur = bc_antibody_umi[bc][antibody]
+                if cur > 10000:
+                    frac = cur / antibody_umi[antibody]
+                    if frac > MAX_UMI_FRACTION:
+                        rows.append(
+                            {
+                                "barcode": bc,
+                                "antibody": antibody,
+                                "umi_count": cur,
+                                "total_umi_count": antibody_umi[antibody],
+                                "fraction": round(frac, 3),
+                            }
+                        )
+                        bc_antibody_umi[bc][antibody] = 0
+        df = pd.DataFrame.from_dict(bc_antibody_umi)
+        df = df.reindex(columns=bcs_list, fill_value=0)
+        df.fillna(0, inplace=True)
+        df = df.astype(int)
+        df.to_csv(f"{self.args.sample}.filtered.tag_barcode.csv.gz")
+
+        df_remove = pd.DataFrame(rows)
+        df_remove.to_csv(f"{self.args.sample}.aggregate.csv", index=False)
 
         # metrics
         stats = {}
@@ -89,14 +127,8 @@ class TagBarcode:
         stats["Fraction Tag Reads"] = utils.get_frac(tag_reads / total_reads)
         stats["Fraction Tag Reads in Cell"] = utils.get_frac(incell_reads / tag_reads)
         stats["Median UMI per Cell"] = median_umi_per_cell
+        stats["Aggregate Barcodes"] = len(set(df_remove["barcode"]))
         utils.write_multiqc(stats, self.args.sample, ASSAY, "tag_barcode" + ".stats")
-
-        # write csv
-        df = pd.DataFrame.from_dict(bc_antibody)
-        df = df.reindex(columns=bcs_list, fill_value=0)
-        df.fillna(0, inplace=True)
-        df = df.astype(int)
-        df.to_csv(f"{self.args.sample}.tag_barcode.csv.gz")
 
 
 if __name__ == "__main__":
