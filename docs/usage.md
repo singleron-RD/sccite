@@ -36,7 +36,7 @@ manifest -m manifest.csv -f /workspaces/scrna_test_data/GEXSCOPE-V2
 
 Recursively search the specified folders for fastq files and (optional) matched barcode files.
 
-`-m --manifest` Path to the manifest CSV file containing mappings between fastq file prefixes and sample names. An example `manifest.csv` can be in the [test data repository](https://github.com/singleron-RD/sccite_test_data/tree/master/test1).
+`-m --manifest` Path to the manifest CSV file containing mappings between fastq file prefixes and sample names. An example `manifest.csv` can be found in the [test data repository](https://github.com/singleron-RD/sccite_test_data/tree/master/test1).
 
 `-f --folders` Comma-separated paths to folders to search for fastq files. If `--match` is used, all `barcode.tsv.gz` files with sample name in the full path will also be searched.
 
