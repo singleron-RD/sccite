@@ -5,7 +5,7 @@
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 4 columns, and a header row as shown in the examples below. An example `samplesheet.csv` can be found [here](https://github.com/singleron-RD/sccite_test_data/tree/master/test1).
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 4 columns, and a header row as shown in the examples below. An example `samplesheet.csv` can be found in the [test data repository](https://github.com/singleron-RD/sccite_test_data/tree/master/test1).
 
 ```bash
 --input '[path to samplesheet file]'
@@ -31,41 +31,14 @@ When you have many samples, manually creating `samplesheet.csv` can be tedious a
 
 ```
 pip install sccore
-manifest -m manifest.csv -f /workspaces/sccite_test_data/test1 --match
+manifest -m manifest.csv -f /workspaces/scrna_test_data/GEXSCOPE-V2
 ```
 
-`-m --manifest` Path to the manifest CSV file containing prefix-sample mapping.
+Recursively search the specified folders for fastq files and (optional) matched barcode files.
 
-`-f --folders` Comma-separated paths to folders to search for fastq files. If `--match` is used, all `barcode.tsv.gz` files with sample name in the full path will also be searched. 
+`-m --manifest` Path to the manifest CSV file containing mappings between fastq file prefixes and sample names. An example `manifest.csv` can be in the [test data repository](https://github.com/singleron-RD/sccite_test_data/tree/master/test1).
 
-manifest.csv
-
-```
-sample,prefix
-X,prefixX
-Y,prefixY
-```
-
-```
-/workspaces/sccite_test_data/test1
-├── cite_barcode.fasta
-├── manifest.csv
-├── match_barcode
-│   ├── X.matrix
-│   │   └── filtered
-│   │       └── barcodes.tsv.gz
-│   └── Y.matrix
-│       └── filtered
-│           └── barcodes.tsv.gz
-├── prefixX_001_R1.fq.gz
-├── prefixX_001_R2.fq.gz
-├── prefixX_002_R1.fq.gz
-├── prefixX_002_R2.fq.gz
-├── prefixY_001_R1.fq.gz
-├── prefixY_001_R2.fq.gz
-├── README.md
-└── samplesheet.csv
-```
+`-f --folders` Comma-separated paths to folders to search for fastq files. If `--match` is used, all `barcode.tsv.gz` files with sample name in the full path will also be searched.
 
 ## Running the pipeline
 
@@ -132,7 +105,7 @@ TACCCGTAATAGCGT
 
 ### Running the pipeline with test data
 
-This pipeline contains a small test data. The test config file can be found [here](../conf/test.config) and test data [here](https://github.com/singleron-RD/sccite_test_data).
+This pipeline contains a small test data. The test config file can be found [here](../conf/test.config).
 
 Run the following command to test
 
