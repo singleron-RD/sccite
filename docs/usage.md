@@ -93,7 +93,7 @@ nf-core launch singleron-RD/sccite
 
 ### Tag barcode
 
-`tag_barcode_fasta` Path to the tag barcode fasta file. The read name in the fasta is the antibody ID and the sequence is the tag barcode. Example:
+`tag_barcode_fasta` Path to the tag barcode fasta file. The read names in the fasta are the antibody ID and the sequences are the tag barcodes. Example:
 ```
 >A0001_CD4
 AACAAGACCCTTGAG
@@ -101,7 +101,7 @@ AACAAGACCCTTGAG
 TACCCGTAATAGCGT
 ```
 
-`r2_pattern` Specifies how to extract the index barcode sequence from the R2 read. Example: `L21C15` means the first 21 bases are the linker, the tag barcode starts at the 22nd base and is 15 bases long.
+`r2_pattern` Specifies how to locate the tag barcode sequence in R2 reads. Example: `L21C15` means the first 21 bases are the linker, the tag barcode starts at the 22nd base and is 15 bases long.
 
 ### Running the pipeline with test data
 
