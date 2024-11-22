@@ -118,7 +118,7 @@ class TagBarcode:
         df = df.astype(int)
         df.to_csv(f"{self.args.sample}.filtered.tag_barcode.csv.gz")
 
-        df_remove = pd.DataFrame(rows)
+        df_remove = pd.DataFrame(rows, columns=["barcode", "antibody", "umi_count", "total_umi_count", "fraction"])
         df_remove.to_csv(f"{self.args.sample}.aggregate.csv", index=False)
 
         # metrics
